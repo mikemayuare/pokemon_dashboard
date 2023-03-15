@@ -1,0 +1,16 @@
+@font-face {
+    font-family: "pokemon-gb";
+    src: url("pokemongb.ttf") format("woff"),
+        url("pokemongb.ttf") format("opentype"),
+        url("pokemongb.ttf") format("truetype");
+}
+
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.bg-card {
+    background-color: '#ccc';
+}
