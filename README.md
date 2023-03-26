@@ -1,11 +1,13 @@
-# Pokémon Dahs dashboard
+# Pokémon Dash dashboard
 
-**UNDER DEVELOPMENT**
+Dashboard to visualize statistics of the pokémon up to the 7th generation.
 
-Dashboard to visualize statitics of the pokemon up to the 7th generation.
+Made with Python and Plotly/Dash libraries.
+
+Online deployment [link](pokedash.2mfitnessduo.com)
 
 ## Datasets
 
-**Images:** https://www.kaggle.com/datasets/vishalsubbiah/pokemon-images-and-types
+**Images:** [Kaggle](https://www.kaggle.com/datasets/kvpratama/pokemon-images-dataset)
 
-**Pokémon data:** https://www.kaggle.com/datasets/rounakbanik/pokemon
+**Pokémon data:** [Kaggle](ttps://www.kaggle.com/datasets/rounakbanik/pokemon)
