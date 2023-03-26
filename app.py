@@ -7,13 +7,27 @@ import plotly.express as px
 import plotly.graph_objects as go
 from math import isnan
 
-load_figure_template("superhero")
+load_figure_template("cerulean")
 dbc_css = "https://cdn.jsdelivr.net/gh/AnnMarieW/dash-bootstrap-templates/dbc.min.css"
 style = "./assets/style.css"
+bootstrap = dbc.themes.CERULEAN
 
 poke_df = pd.read_csv("data/poke_data.csv", converters={"abilities": pd.eval})
-bootstrap = dbc.themes.SUPERHERO
-stats = ["hp", "attack", "defense", "sp_attack", "sp_defense", "speed"]
+dropdown_options = [
+    {"label": f"#{y} " + x.capitalize(), "value": x}
+    for x, y in zip(poke_df["name"], poke_df["pokedex_number"])
+]
+# %%
+type_matrix = pd.read_csv("data/type_chart.csv", index_col="Attacking")
+
+stats = [
+    "health points",
+    "attack",
+    "defense",
+    "special attack",
+    "special defense",
+    "speed",
+]
 types = [
     "bug",
     "dark",
@@ -34,11 +48,11 @@ types = [
     "steel",
     "water",
 ]
-# %%
 
 plotly_buttons = {
     "displayModeBar": False,
     "displaylogo": False,
+    "scrollZoom": False,
 }
 
 
@@ -47,17 +61,31 @@ def melt_df(df):
     to the plotly.express.line_radar
     """
     melt_columns = [
-        "hp",
+        "health points",
         "attack",
         "defense",
-        "sp_attack",
-        "sp_defense",
+        "special attack",
+        "special defense",
         "speed",
         "name",
     ]
     melted_df = df[melt_columns].melt(id_vars=["name"], var_name="stat")
     return melted_df
 
+
+treemap = px.treemap(
+    poke_df,
+    path=["generation", "type1", "type2", "name"],
+    title="Pokémon by generation and types",
+)
+treemap.update_traces(marker_cornerradius=5, maxdepth=2)
+
+heatmap = px.imshow(
+    type_matrix,
+    text_auto=True,
+    aspect="auto",
+    title="Damage factor",
+)
 
 app = Dash(
     __name__,
@@ -72,6 +100,7 @@ app = Dash(
 
 app.title = "Pokémon Dashboard"
 app._favicon = "favicon.png"
+server = app.server
 
 app.layout = dbc.Container(
     [
@@ -79,7 +108,7 @@ app.layout = dbc.Container(
         dbc.Row(
             html.Div(
                 html.Img(
-                    src="https://fontmeme.com/permalink/230316/79efd7b7b6559fe97f5374105ae9a3d5.png",
+                    src="assets/headerlogo.png",
                     className="center",
                     style={"maxHeight": "80px"},
                 ),
@@ -95,10 +124,7 @@ app.layout = dbc.Container(
                         dcc.Dropdown(
                             id="unique-selector",
                             value="bulbasaur",
-                            options=[
-                                {"label": x.capitalize(), "value": x}
-                                for x in poke_df["name"].unique()
-                            ],
+                            options=dropdown_options,
                             clearable=False,
                             className="pb-1",
                         ),
@@ -142,10 +168,7 @@ app.layout = dbc.Container(
                     dcc.Dropdown(
                         id="dropdown",
                         value=["bulbasaur", "charmander", "squirtle"],
-                        options=[
-                            {"label": x.capitalize(), "value": x}
-                            for x in poke_df["name"].unique()
-                        ],
+                        options=dropdown_options,
                         multi=True,
                         clearable=False,
                     ),
@@ -180,10 +203,17 @@ app.layout = dbc.Container(
             ],
             class_name="me-2 ms-2",
         ),
+        ###### third row
+        dbc.Row(
+            [
+                dbc.Col(dcc.Graph(figure=treemap), width=6),
+                dbc.Col(dcc.Graph(figure=heatmap), width=6),
+            ]
+        ),
     ],
     class_name="dbc",
     fluid=True,
-    style={"fontFamily": "pokemon-gb", "background-color": "#191B1D"},
+    style={"fontFamily": "pokemon-gb"},
 )
 
 
@@ -231,28 +261,31 @@ def poke_stats(value):
         ),
         dbc.CardBody(
             [
-                dbc.ListGroupItem(
-                    [html.B(f"Abilities: "), f"{abilities}"], class_name="mb-3"
-                ),
-                dbc.ListGroupItem([html.B("Type 1: "), f"{type1}"]),
-                dbc.ListGroupItem([html.B("Type 2: "), f"{type2}"], class_name="mb-2"),
-                dbc.ListGroupItem([html.B("Weight: "), f"{weight} kg"]),
-                dbc.ListGroupItem(
-                    [html.B("Height: "), f"{height} m"], class_name="mb-4"
-                ),
-                dbc.ListGroupItem(
-                    [html.B("Very resistant against: "), f"{very_resistant}."],
-                    class_name="mb-2",
-                ),
-                dbc.ListGroupItem(
-                    [html.B("Resistant against: "), f"{resistant}."],
-                    class_name="mb-2",
-                ),
-                dbc.ListGroupItem(
-                    [html.B("Weak against: "), f"{weak}."], class_name="mb-2"
-                ),
-                dbc.ListGroupItem(f"{inmune}", class_name="mb-2"),
-            ]
+                dbc.ListGroup(
+                    [
+                        dbc.ListGroupItem(
+                            [html.B(f"Abilities: "), f"{abilities}"],
+                        ),
+                        dbc.ListGroupItem([html.B("Type 1: "), f"{type1}"]),
+                        dbc.ListGroupItem(
+                            [html.B("Type 2: "), f"{type2}"],
+                        ),
+                        dbc.ListGroupItem([html.B("Weight: "), f"{weight} kg"]),
+                        dbc.ListGroupItem(
+                            [html.B("Height: "), f"{height} m"],
+                        ),
+                        dbc.ListGroupItem(
+                            [html.B("Very resistant against: "), f"{very_resistant}."],
+                        ),
+                        dbc.ListGroupItem(
+                            [html.B("Resistant against: "), f"{resistant}."]
+                        ),
+                        dbc.ListGroupItem([html.B("Weak against: "), f"{weak}."]),
+                        dbc.ListGroupItem(html.B(f"{inmune}")),
+                    ]
+                )
+            ],
+            style={"fontSize": "0.7em"},
         ),
     ]
     bars_df = df[stats]
@@ -263,10 +296,11 @@ def poke_stats(value):
     )
     fig.update_traces(marker_line_width=0)
     fig.update_layout(
+        title="Base Stats",
         xaxis_title="",
+        yaxis_categoryorder="total ascending",
         yaxis_title="",
         showlegend=False,
-        plot_bgcolor="#4E5D6C",
     )
     return image, poke_name, fig
 
@@ -295,7 +329,7 @@ def plot_radar(value):
                 yanchor="middle",
                 sizing="contain",
                 layer="above",
-                opacity=0.2,
+                opacity=0.1,
             )
         ]
     )
@@ -306,11 +340,13 @@ def plot_radar(value):
         y="base_total",
         color_discrete_sequence=["#0075BE"],
     )
-    barplot.update_traces(marker_line_width=0)
+    barplot.update_traces(
+        marker_line_width=0,
+    )
     barplot.update_layout(
         xaxis_title="",
+        xaxis_categoryorder="total descending",
         yaxis_title=("Total Base Abilities"),
-        plot_bgcolor="#4E5D6C",
     )
     return radar, barplot
 
