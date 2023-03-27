@@ -1,4 +1,3 @@
-# %%
 import pandas as pd
 from dash import Dash, dcc, html, Input, Output
 import dash_bootstrap_components as dbc
@@ -7,17 +6,17 @@ import plotly.express as px
 import plotly.graph_objects as go
 from math import isnan
 
-load_figure_template("cerulean")
+load_figure_template("flatly")
 dbc_css = "https://cdn.jsdelivr.net/gh/AnnMarieW/dash-bootstrap-templates/dbc.min.css"
 style = "./assets/style.css"
-bootstrap = dbc.themes.CERULEAN
+bootstrap = dbc.themes.PULSE
 
 poke_df = pd.read_csv("data/poke_data.csv", converters={"abilities": pd.eval})
 dropdown_options = [
     {"label": f"#{y} " + x.capitalize(), "value": x}
     for x, y in zip(poke_df["name"], poke_df["pokedex_number"])
 ]
-# %%
+
 type_matrix = pd.read_csv("data/type_chart.csv", index_col="Attacking")
 
 stats = [
@@ -79,12 +78,27 @@ treemap = px.treemap(
     title="Pokémon by generation and types",
 )
 treemap.update_traces(marker_cornerradius=5, maxdepth=2)
+treemap.update_layout(
+    height=600,
+    title_x=0.5,
+    title_font_size=24,
+)
 
 heatmap = px.imshow(
     type_matrix,
     text_auto=True,
     aspect="auto",
     title="Damage factor",
+    color_continuous_scale=[(0, "green"), (0.5, "white"), (1, "red")],
+)
+heatmap.update_layout(
+    coloraxis_showscale=False,
+    height=600,
+    yaxis_autorange="reversed",
+    yaxis_showgrid=False,
+    xaxis_showgrid=False,
+    title_x=0.5,
+    title_font_size=24,
 )
 
 app = Dash(
@@ -206,8 +220,8 @@ app.layout = dbc.Container(
         ###### third row
         dbc.Row(
             [
-                dbc.Col(dcc.Graph(figure=treemap), width=6),
-                dbc.Col(dcc.Graph(figure=heatmap), width=6),
+                dbc.Col(dcc.Graph(figure=treemap, config=plotly_buttons), width=6),
+                dbc.Col(dcc.Graph(figure=heatmap, config=plotly_buttons), width=6),
             ]
         ),
     ],
@@ -301,6 +315,8 @@ def poke_stats(value):
         yaxis_categoryorder="total ascending",
         yaxis_title="",
         showlegend=False,
+        title_x=0.5,
+        title_font_size=24,
     )
     return image, poke_name, fig
 
