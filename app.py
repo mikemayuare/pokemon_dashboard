@@ -95,7 +95,7 @@ heatmap.update_layout(
     height=600,
     # yaxis_autorange="reversed",
     yaxis_showgrid=False,
-    xaxis_title="Denfending",
+    xaxis_title="Defending",
     xaxis_showgrid=False,
     title_x=0.5,
     title_font_size=title_size,
