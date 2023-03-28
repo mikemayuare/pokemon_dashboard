@@ -3,14 +3,13 @@ from dash import Dash, dcc, html, Input, Output
 import dash_bootstrap_components as dbc
 from dash_bootstrap_templates import load_figure_template
 import plotly.express as px
-import plotly.graph_objects as go
 from math import isnan
 
 load_figure_template("flatly")
 dbc_css = "https://cdn.jsdelivr.net/gh/AnnMarieW/dash-bootstrap-templates/dbc.min.css"
 style = "./assets/style.css"
 bootstrap = dbc.themes.PULSE
-
+title_size = 30
 poke_df = pd.read_csv("data/poke_data.csv", converters={"abilities": pd.eval})
 dropdown_options = [
     {"label": f"#{y} " + x.capitalize(), "value": x}
@@ -74,31 +73,32 @@ def melt_df(df):
 
 treemap = px.treemap(
     poke_df,
-    path=["generation", "type1", "type2", "name"],
+    path=[px.Constant("All pokémons"), "generation", "type1", "type2", "name"],
     title="Pokémon by generation and types",
 )
 treemap.update_traces(marker_cornerradius=5, maxdepth=2)
 treemap.update_layout(
     height=600,
     title_x=0.5,
-    title_font_size=24,
+    title_font_size=title_size,
 )
 
 heatmap = px.imshow(
     type_matrix,
     text_auto=True,
     aspect="auto",
-    title="Damage factor",
+    title="Damage multiplier by type",
     color_continuous_scale=[(0, "green"), (0.5, "white"), (1, "red")],
 )
 heatmap.update_layout(
     coloraxis_showscale=False,
     height=600,
-    yaxis_autorange="reversed",
+    # yaxis_autorange="reversed",
     yaxis_showgrid=False,
+    xaxis_title="Denfending",
     xaxis_showgrid=False,
     title_x=0.5,
-    title_font_size=24,
+    title_font_size=title_size,
 )
 
 app = Dash(
@@ -181,7 +181,7 @@ app.layout = dbc.Container(
                 dbc.Col(
                     dcc.Dropdown(
                         id="dropdown",
-                        value=["bulbasaur", "charmander", "squirtle"],
+                        value=["bulbasaur", "ivysaur", "venusaur"],
                         options=dropdown_options,
                         multi=True,
                         clearable=False,
@@ -316,7 +316,7 @@ def poke_stats(value):
         yaxis_title="",
         showlegend=False,
         title_x=0.5,
-        title_font_size=24,
+        title_font_size=title_size,
     )
     return image, poke_name, fig
 
