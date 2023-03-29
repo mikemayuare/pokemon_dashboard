@@ -10,4 +10,4 @@ Online deployment [link](pokedash.2mfitnessduo.com)
 
 **Images:** [Kaggle](https://www.kaggle.com/datasets/kvpratama/pokemon-images-dataset)
 
-**Pokémon data:** [Kaggle](ttps://www.kaggle.com/datasets/rounakbanik/pokemon)
+**Pokémon data:** [Kaggle](https://www.kaggle.com/datasets/rounakbanik/pokemon)
