@@ -55,6 +55,8 @@ plotly_buttons = {
     "scrollZoom": False,
 }
 
+hoverlabel = dict(font_size=15)
+
 
 def melt_df(df):
     """melt_df melts DataFrame intoa  format suitable
@@ -76,7 +78,7 @@ def melt_df(df):
 treemap = px.treemap(
     poke_df,
     path=[px.Constant("All pokémons"), "generation", "type1", "type2", "name"],
-    title="Pokémon by generation and types",
+    title="Pokémons by generation and type",
 )
 treemap.update_traces(
     marker_cornerradius=5,
@@ -87,6 +89,7 @@ treemap.update_layout(
     height=600,
     title_x=0.5,
     title_font_size=title_size,
+    hoverlabel=hoverlabel,
 )
 
 heatmap = px.imshow(
@@ -110,6 +113,7 @@ heatmap.update_layout(
     xaxis_showgrid=False,
     title_x=0.5,
     title_font_size=title_size,
+    hoverlabel=hoverlabel,
 )
 
 app = Dash(
@@ -314,21 +318,23 @@ def poke_stats(value):
         ),
     ]
     bars_df = df[stats].T
+    bars_df.columns = ["name"]
     fig = px.bar(
         bars_df,
-        x=0,
+        x="name",
         orientation="h",
         color_discrete_sequence=["#0075BE"],
     )
     fig.update_traces(hovertemplate="%{x} points")
     fig.update_layout(
-        title="Base Stats",
+        title="Base stats",
         xaxis_title="",
         yaxis_categoryorder="total ascending",
         yaxis_title="",
         showlegend=False,
         title_x=0.5,
         title_font_size=title_size,
+        hoverlabel=hoverlabel,
     )
     return image, poke_name, fig
 
@@ -359,7 +365,8 @@ def plot_radar(value):
                 layer="above",
                 opacity=0.1,
             )
-        ]
+        ],
+        hoverlabel=hoverlabel,
     )
 
     barplot = px.bar(
@@ -372,7 +379,8 @@ def plot_radar(value):
     barplot.update_layout(
         xaxis_title="",
         xaxis_categoryorder="total descending",
-        yaxis_title=("Total Base Abilities"),
+        yaxis_title=("Total base abilities"),
+        hoverlabel=hoverlabel,
     )
     return radar, barplot
 
