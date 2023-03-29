@@ -76,7 +76,11 @@ treemap = px.treemap(
     path=[px.Constant("All pokémons"), "generation", "type1", "type2", "name"],
     title="Pokémon by generation and types",
 )
-treemap.update_traces(marker_cornerradius=5, maxdepth=2)
+treemap.update_traces(
+    marker_cornerradius=5,
+    maxdepth=2,
+    hovertemplate="<b>%{label}</b>" + "<br>%{value} <b>pokémons</b></br>",
+)
 treemap.update_layout(
     height=600,
     title_x=0.5,
@@ -88,7 +92,12 @@ heatmap = px.imshow(
     text_auto=True,
     aspect="auto",
     title="Damage multiplier by type",
-    color_continuous_scale=[(0, "green"), (0.5, "white"), (1, "red")],
+    color_continuous_scale=[(0, "red"), (0.5, "white"), (1, "green")],
+)
+heatmap.update_traces(
+    hovertemplate="<b>Attacking</b>: %{x}"
+    + "<br><b>Defending</b>: %{y}</br>"
+    + "<b>Multiplier</b>: %{z}"
 )
 heatmap.update_layout(
     coloraxis_showscale=False,
@@ -308,7 +317,7 @@ def poke_stats(value):
         orientation="h",
         color_discrete_sequence=["#0075BE"],
     )
-    fig.update_traces(marker_line_width=0)
+    fig.update_traces(hovertemplate="%{x} points")
     fig.update_layout(
         title="Base Stats",
         xaxis_title="",
@@ -356,9 +365,7 @@ def plot_radar(value):
         y="base_total",
         color_discrete_sequence=["#0075BE"],
     )
-    barplot.update_traces(
-        marker_line_width=0,
-    )
+    barplot.update_traces(hovertemplate="<b>%{x}</b>: %{y} points")
     barplot.update_layout(
         xaxis_title="",
         xaxis_categoryorder="total descending",
