@@ -1,3 +1,4 @@
+# %%
 import pandas as pd
 from dash import Dash, dcc, html, Input, Output
 import dash_bootstrap_components as dbc
@@ -11,6 +12,7 @@ style = "./assets/style.css"
 bootstrap = dbc.themes.PULSE
 title_size = 30
 poke_df = pd.read_csv("data/poke_data.csv", converters={"abilities": pd.eval})
+# %%
 dropdown_options = [
     {"label": f"#{y} " + x.capitalize(), "value": x}
     for x, y in zip(poke_df["name"], poke_df["pokedex_number"])
@@ -311,9 +313,10 @@ def poke_stats(value):
             style={"fontSize": "0.7em"},
         ),
     ]
-    bars_df = df[stats]
+    bars_df = df[stats].T
     fig = px.bar(
-        bars_df.T,
+        bars_df,
+        x=0,
         orientation="h",
         color_discrete_sequence=["#0075BE"],
     )
