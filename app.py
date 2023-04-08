@@ -100,8 +100,8 @@ heatmap = px.imshow(
     color_continuous_scale=[(0, "red"), (0.5, "white"), (1, "green")],
 )
 heatmap.update_traces(
-    hovertemplate="<b>Attacking</b>: %{x}"
-    + "<br><b>Defending</b>: %{y}</br>"
+    hovertemplate="<b>Attacking</b>: %{y}"
+    + "<br><b>Defending</b>: %{x}</br>"
     + "<b>Multiplier</b>: %{z}"
 )
 heatmap.update_layout(
