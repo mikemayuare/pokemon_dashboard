@@ -11,6 +11,7 @@ dbc_css = "https://cdn.jsdelivr.net/gh/AnnMarieW/dash-bootstrap-templates/dbc.mi
 style = "./assets/style.css"
 bootstrap = dbc.themes.PULSE
 title_size = 30
+font_size = 16
 poke_df = pd.read_csv("data/poke_data.csv", converters={"abilities": pd.eval})
 # %%
 dropdown_options = [
@@ -89,7 +90,7 @@ treemap.update_layout(
     height=600,
     title_x=0.5,
     title_font_size=title_size,
-    font=dict(size=18),  # CHANGE :Size of the font in treemap
+    font_size=18,  # CHANGE :Size of the font in treemap
     hoverlabel=hoverlabel,
 )
 
@@ -108,6 +109,7 @@ heatmap.update_traces(
 heatmap.update_layout(
     coloraxis_showscale=False,
     height=600,
+    font_size=14,
     # yaxis_autorange="reversed",
     yaxis_showgrid=False,
     xaxis_title="Defending",
@@ -337,8 +339,9 @@ def poke_stats(value):
     fig.update_traces(hovertemplate="%{x} points")
     fig.update_layout(
         title="Base stats",
-        font_size=16,
+        font_size=font_size,
         xaxis_title="",
+        yaxis_title="",
         yaxis_categoryorder="total ascending",
         # Forbid the user to zoom in in the axes
         xaxis_fixedrange=True,
@@ -379,7 +382,7 @@ def plot_radar(value):
             )
         ],
         hoverlabel=hoverlabel,
-        font_size=16,
+        font_size=font_size,
     )
 
     barplot = px.bar(
@@ -397,6 +400,7 @@ def plot_radar(value):
         xaxis_fixedrange=True,
         yaxis_fixedrange=True,
         hoverlabel=hoverlabel,
+        font_size=font_size,
     )
     return radar, barplot
 
