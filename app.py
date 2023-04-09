@@ -89,6 +89,7 @@ treemap.update_layout(
     height=600,
     title_x=0.5,
     title_font_size=title_size,
+    font=dict(size=18),  # CHANGE :Size of the font in treemap
     hoverlabel=hoverlabel,
 )
 
@@ -235,8 +236,20 @@ app.layout = dbc.Container(
         ###### third row
         dbc.Row(
             [
-                dbc.Col(dcc.Graph(figure=treemap, config=plotly_buttons), width=6),
-                dbc.Col(dcc.Graph(figure=heatmap, config=plotly_buttons), width=6),
+                dbc.Col(
+                    dcc.Graph(figure=treemap, config=plotly_buttons),
+                    lg=6,
+                    md=12,
+                    sm=12,
+                    xs=12,
+                ),
+                dbc.Col(
+                    dcc.Graph(figure=heatmap, config=plotly_buttons),
+                    lg=6,
+                    md=12,
+                    sm=12,
+                    xs=12,
+                ),
             ]
         ),
     ],
@@ -283,11 +296,7 @@ def poke_stats(value):
 
     image = df["image"].values[0]
     poke_name = [
-        html.H3(
-            dbc.CardHeader(
-                f'#{df["pokedex_number"].values[0]}: {df["name"].str.capitalize().values[0]}'
-            )
-        ),
+        html.H3(dbc.CardHeader("Pokédex", style={"fontSize": "0,6em"})),
         dbc.CardBody(
             [
                 dbc.ListGroup(
@@ -328,9 +337,12 @@ def poke_stats(value):
     fig.update_traces(hovertemplate="%{x} points")
     fig.update_layout(
         title="Base stats",
+        font_size=16,
         xaxis_title="",
         yaxis_categoryorder="total ascending",
-        yaxis_title="",
+        # Forbid the user to zoom in in the axes
+        xaxis_fixedrange=True,
+        yaxis_fixedrange=True,
         showlegend=False,
         title_x=0.5,
         title_font_size=title_size,
@@ -367,6 +379,7 @@ def plot_radar(value):
             )
         ],
         hoverlabel=hoverlabel,
+        font_size=16,
     )
 
     barplot = px.bar(
@@ -380,6 +393,9 @@ def plot_radar(value):
         xaxis_title="",
         xaxis_categoryorder="total descending",
         yaxis_title=("Total base abilities"),
+        # Forbid user to zoom in the axes
+        xaxis_fixedrange=True,
+        yaxis_fixedrange=True,
         hoverlabel=hoverlabel,
     )
     return radar, barplot
