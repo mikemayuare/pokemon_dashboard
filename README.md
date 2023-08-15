@@ -4,7 +4,7 @@ Dashboard to visualize statistics of the pokémon up to the 7th generation.
 
 Made with Python and Plotly/Dash libraries.
 
-Online deployment [link](https://mikemayuare.com/pokedash)
+Online deployment [link](https://pokedash.mikemayuare.com/)
 
 ## Datasets
 
